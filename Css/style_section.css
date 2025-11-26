@@ -1,0 +1,142 @@
+.tabs .tab {
+  padding: 16px;
+}
+
+.content {
+  padding: 28px;
+}
+
+.section-header h2 {
+    margin-bottom:20px;
+  font-size: 22px;
+
+}
+
+.btn-add {
+  background: #2563eb;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.sections-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.sections-table th,
+.sections-table td {
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid #f3f4f6;
+  color: #374151;
+
+}
+
+.actions .btn {
+  margin-right: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-edit {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.btn-delete {
+  background: #ef4444;
+  color: #fff;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+}
+
+/* Section should be positioned relative */
+.content {
+  position: relative;
+  padding: 28px;
+}
+
+/* Modal backdrop inside the section */
+.modal-backdrop {
+  position: absolute; /* changed from fixed */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.55);
+  display: none; /* show via JS */
+  align-items: center;
+  justify-content: center;
+  z-index: 10; /* relative to section */
+}
+
+/* Modal stays same */
+.modal {
+  width: 420px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: 0 20px 40px rgba(2, 6, 23, 0.4);
+  /* center inside flex parent */
+  margin: auto;
+}
+
+
+.modal h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+}
+
+.form-row {
+  margin-bottom: 12px;
+}
+
+.form-row input,
+.form-row textarea {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.btn-secondary {
+  background: #f3f4f6;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.empty-row {
+  text-align: center;
+  padding: 22px;
+  color: #6b7280;
+  font-style: italic;
+}

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Result Management System</title>
+  <link rel="stylesheet" href="Css/style.css">
+  <link rel="stylesheet" href="Css/style_dashboard.css">
+</head>
+
+<body>
+
+  <div class="main-card">
+
+    <div class="card-header">
+      <h1>Student Result Management System</h1>
+      <p>Manage students, sections, and academic results</p>
+    </div>
+
+    <div class="tabs">
+      <button onclick="location.reload();">Students</button>
+      <button onclick="window.location.href='section.html';">Sections</button>
+      <button onclick="window.location.href='result.html';">Results</button>
+    </div>
+
+    <div class="content" id="studentContent">
+      <div class="section-header">
+        <h2>Student Management</h2>
+        <button id="openAddStudentModal">Add New Student</button>
+      </div>
+
+      <div class="table-container">
+        <table border="1">
+          <thead>
+            <tr>
+              <th>NAME</th>
+              <th>EMAIL</th>
+              <th>SECTION</th>
+              <th>ENROLLMENT DATE</th>
+              <th>ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody id="studentTableBody">
+            <tr>
+              <td colspan="5">Loading students...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="studentFormModal" style="display:none;">
+    <div class="modal-content">
+      <h3 id="modalTitle">Add New Student</h3>
+      <form id="studentForm">
+        <input type="hidden" id="studentId">
+        
+        <label>Name:</label>
+        <input type="text" id="studentName" required>
+        <br><br>
+
+        <label>Email:</label>
+        <input type="email" id="studentEmail" required>
+        <br><br>
+        
+        <label>Section:</label>
+        <select id="studentSection" required></select>
+        <br><br>
+
+        <button type="button" id="closeFormModalBtn">Cancel</button>
+        <button type="submit" id="saveStudentBtn">Save Student</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="deleteConfirmModal" style="display:none;">
+    <div class="modal-content">
+      <h3>Confirm Deletion</h3>
+      <p>Are you sure you want to delete this student?</p>
+      <button type="button" id="cancelDeleteBtn">Cancel</button>
+      <button type="button" id="confirmDeleteBtn">Delete</button>
+    </div>
+  </div>
+
+  <script>
+    let students = [];
+    let sections = ['A', 'B', 'C', 'D'];
+    let deleteId = null;
+
+    // Load data
+    function loadData() {
+      let data = localStorage.getItem('students');
+      if (data) students = JSON.parse(data);
+    }
+
+    // Save data
+    function saveData() {
+      localStorage.setItem('students', JSON.stringify(students));
+    }
+
+    // Show table
+    function showStudents() {
+      let tbody = document.getElementById('studentTableBody');
+      tbody.innerHTML = '';
+
+      if (students.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">No students found</td></tr>';
+        return;
+      }
+
+      students.forEach(student => {
+        let row = '<tr>' +
+          '<td>' + student.name + '</td>' +
+          '<td>' + student.email + '</td>' +
+          '<td>' + student.section + '</td>' +
+          '<td>' + student.date + '</td>' +
+          '<td>' +
+            '<button onclick="editStudent(\'' + student.id + '\')">Edit</button> ' +
+            '<button onclick="deleteStudent(\'' + student.id + '\')">Delete</button>' +
+          '</td>' +
+        '</tr>';
+        tbody.innerHTML += row;
+      });
+    }
+
+    // Fill sections
+    function fillSections() {
+      let select = document.getElementById('studentSection');
+      select.innerHTML = '';
+      sections.forEach(section => {
+        select.innerHTML += '<option value="' + section + '">' + section + '</option>';
+      });
+    }
+
+    // Show modal
+    function showModal(id) {
+      document.getElementById(id).style.display = 'block';
+    }
+
+    // Hide modal
+    function hideModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    // Add student
+    function addStudent(name, email, section) {
+      let student = {
+        id: Date.now().toString(),
+        name: name,
+        email: email,
+        section: section,
+        date: new Date().toLocaleDateString()
+      };
+      students.push(student);
+      saveData();
+      showStudents();
+    }
+
+    // Edit student
+    function editStudent(id) {
+      let student = students.find(s => s.id === id);
+      if (student) {
+        document.getElementById('studentId').value = student.id;
+        document.getElementById('studentName').value = student.name;
+        document.getElementById('studentEmail').value = student.email;
+        fillSections();
+        document.getElementById('studentSection').value = student.section;
+        document.getElementById('modalTitle').textContent = 'Edit Student';
+        document.getElementById('saveStudentBtn').textContent = 'Update';
+        showModal('studentFormModal');
+      }
+    }
+
+    // Update student
+    function updateStudent(id, name, email, section) {
+      let index = students.findIndex(s => s.id === id);
+      if (index !== -1) {
+        students[index].name = name;
+        students[index].email = email;
+        students[index].section = section;
+        saveData();
+        showStudents();
+      }
+    }
+
+    // Delete student
+    function deleteStudent(id) {
+      deleteId = id;
+      showModal('deleteConfirmModal');
+    }
+
+    // Remove student
+    function removeStudent(id) {
+      students = students.filter(s => s.id !== id);
+      saveData();
+      showStudents();
+    }
+
+    // Open add
+    document.getElementById('openAddStudentModal').onclick = function() {
+      document.getElementById('studentForm').reset();
+      document.getElementById('studentId').value = '';
+      document.getElementById('modalTitle').textContent = 'Add New Student';
+      document.getElementById('saveStudentBtn').textContent = 'Save Student';
+      fillSections();
+      showModal('studentFormModal');
+    };
+
+    // Close form
+    document.getElementById('closeFormModalBtn').onclick = function() {
+      hideModal('studentFormModal');
+    };
+
+    // Cancel delete
+    document.getElementById('cancelDeleteBtn').onclick = function() {
+      deleteId = null;
+      hideModal('deleteConfirmModal');
+    };
+
+    // Confirm delete
+    document.getElementById('confirmDeleteBtn').onclick = function() {
+      if (deleteId) {
+        removeStudent(deleteId);
+        deleteId = null;
+      }
+      hideModal('deleteConfirmModal');
+    };
+
+    // Form submit
+    document.getElementById('studentForm').onsubmit = function(e) {
+      e.preventDefault();
+      
+      let id = document.getElementById('studentId').value;
+      let name = document.getElementById('studentName').value;
+      let email = document.getElementById('studentEmail').value;
+      let section = document.getElementById('studentSection').value;
+
+      if (id) {
+        updateStudent(id, name, email, section); // Update existing
+      } else {
+        addStudent(name, email, section); // Add new
+      }
+
+      hideModal('studentFormModal');
+      document.getElementById('studentForm').reset();
+    };
+
+    // Start app
+    loadData();
+    showStudents();
+  </script>
+</body>
+</html>

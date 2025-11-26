@@ -1,0 +1,218 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Inter", Arial, sans-serif;
+  background: url('../image/img.jpeg') center/cover no-repeat fixed;
+}
+
+/* MAIN CARD */
+.main-card {
+  width: 85%;
+  margin: 40px auto;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0px 30px 50px rgba(0,0,0,0.35);
+  overflow: hidden;
+}
+
+/* HEADER */
+.card-header {
+  text-align: center;
+  padding: 45px 20px 30px;
+  background: linear-gradient(135deg, #5a5ce6, #9b4fff);
+  color: white;
+}
+
+.card-header h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.card-header p {
+  margin-top: 8px;
+  opacity: 0.95;
+  font-size: 16px;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  background: #f8f9fc;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.tabs button {
+  flex: 1;
+  padding: 15px;
+  font-size: 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.tabs button:hover {
+  color: #4f46e5;
+}
+
+/* CONTENT */
+.content {
+  position: relative;
+  padding: 28px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #1f2937;
+}
+
+.section-header button {
+  background: #2563eb;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+
+/* TABLE */
+.table-container {
+  margin-top: 20px;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+}
+
+table th {
+  background: #f3f4f6;
+  padding: 14px;
+  text-align: left;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+table td {
+  padding: 14px;
+  color: #374151;
+}
+
+table tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* MODAL BACKDROP */
+.modal {
+  width: 420px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: 0 20px 40px rgba(2, 6, 23, 0.4);
+  /* center inside flex parent */
+  margin: auto;
+}
+.modal-backdrop,
+#studentFormModal,
+#deleteConfirmModal {
+    position: relative; /* changed from fixed */
+  top: 0%;
+  left: 36%;
+  width: 100%;
+  height: 100%;
+  display: none; /* show via JS */
+  align-items: center;
+  justify-content: center;
+  z-index: 10; /* relative to section */
+}
+
+/* MODAL BOX */
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  color: #4f46e5;
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.modal-content label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #374151;
+  font-size: 14px;
+}
+
+.modal-content input,
+.modal-content select {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
+
+.modal-content button {
+  margin-top: 20px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+#closeFormModalBtn,
+#cancelDeleteBtn {
+  background: #9ca3af;
+  color: white;
+}
+
+#saveStudentBtn,
+#confirmDeleteBtn {
+  background: #2563eb;
+  color: white;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .main-card {
+    margin: 10px auto;
+    border-radius: 0;
+    width: 100%;
+  }
+
+  .card-header h1 {
+    font-size: 24px;
+  }
+
+  .content {
+    padding: 15px;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}

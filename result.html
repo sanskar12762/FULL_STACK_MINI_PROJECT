@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Results - Student Result Management System</title>
+  <link rel="stylesheet" href="Css/style.css">
+  <link rel="stylesheet" href="Css/style_section.css">
+
+</head>
+
+<body>
+
+  <div class="main-card">
+
+    <div class="card-header">
+      <h1>Student Result Management System</h1>
+      <p>Manage students, sections, and academic results</p>
+    </div>
+
+    <div class="tabs">
+      <button onclick="window.location.href='dashboard.html';">Students</button>
+      <button onclick="window.location.href='section.html';">Sections</button>
+      <button>Results</button>
+    </div>
+
+    <div class="content">
+      <div class="section-header">
+        <h2>Result Management</h2>
+        <button id="openAddResult">Add New Result</button>
+      </div>
+
+      <table border="1">
+        <thead>
+          <tr>
+            <th>STUDENT</th>
+            <th>SECTION</th>
+            <th>SUBJECT</th>
+            <th>MARKS</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody id="resultsTableBody">
+          <tr>
+            <td colspan="5">Loading results...</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <div id="resultModal" style="display:none;">
+    <div class="modal">
+      <h3 id="resultModalTitle">Add New Result</h3>
+
+      <label>Student:</label>
+      <select id="resultStudent"></select>
+      <br><br>
+
+      <label>Section:</label>
+      <select id="resultSection"></select>
+      <br><br>
+
+      <label>Subject:</label>
+      <input type="text" id="resultSubject" required>
+      <br><br>
+
+      <label>Marks:</label>
+      <input type="number" id="resultMarks" required>
+      <br><br>
+
+      <button id="resultCancel">Cancel</button>
+      <button id="resultSave">Save</button>
+    </div>
+  </div>
+
+  <script>
+    let students = [];
+    let sections = [];
+    let results = [];
+    let editId = null;
+
+    // Load data
+    function loadData() {
+      let stuData = localStorage.getItem('students');
+      if (stuData) students = JSON.parse(stuData);
+
+      let secData = localStorage.getItem('sections');
+      if (secData) sections = JSON.parse(secData);
+
+      let resData = localStorage.getItem('results');
+      if (resData) results = JSON.parse(resData);
+    }
+
+    // Save data
+    function saveData() {
+      localStorage.setItem('students', JSON.stringify(students));
+      localStorage.setItem('sections', JSON.stringify(sections));
+      localStorage.setItem('results', JSON.stringify(results));
+    }
+
+    // Show results
+    function showResults() {
+      let tbody = document.getElementById('resultsTableBody');
+      tbody.innerHTML = '';
+
+      if (results.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">No results found</td></tr>';
+        return;
+      }
+
+      results.forEach(result => {
+        let student = students.find(s => s.id === result.studentId);
+        let studentName = student ? student.name : 'N/A';
+
+        let row = '<tr>' +
+          '<td>' + studentName + '</td>' +
+          '<td>' + result.section + '</td>' +
+          '<td>' + result.subject + '</td>' +
+          '<td>' + result.marks + '</td>' +
+          '<td>' +
+            '<button onclick="editResult(\'' + result.id + '\')">Edit</button> ' +
+            '<button onclick="deleteResult(\'' + result.id + '\')">Delete</button>' +
+          '</td>' +
+        '</tr>';
+        tbody.innerHTML += row;
+      });
+    }
+
+    // Fill dropdowns
+    function fillDropdowns() {
+      let stuSelect = document.getElementById('resultStudent');
+      stuSelect.innerHTML = '';
+      students.forEach(student => {
+        stuSelect.innerHTML += '<option value="' + student.id + '">' + student.name + '</option>';
+      });
+
+      let secSelect = document.getElementById('resultSection');
+      secSelect.innerHTML = '';
+      sections.forEach(section => {
+        secSelect.innerHTML += '<option value="' + section.name + '">' + section.name + '</option>';
+      });
+    }
+
+    // Show modal
+    function showModal() {
+      document.getElementById('resultModal').style.display = 'block';
+    }
+
+    // Hide modal
+    function hideModal() {
+      document.getElementById('resultModal').style.display = 'none';
+    }
+
+    // Add result
+    function addResult(studentId, section, subject, marks) {
+      let result = {
+        id: Date.now().toString(),
+        studentId: studentId,
+        section: section,
+        subject: subject,
+        marks: marks
+      };
+      results.push(result);
+      saveData();
+      showResults();
+    }
+
+    // Edit result
+    function editResult(id) {
+      let result = results.find(r => r.id === id);
+      if (result) {
+        editId = id;
+        document.getElementById('resultStudent').value = result.studentId;
+        document.getElementById('resultSection').value = result.section;
+        document.getElementById('resultSubject').value = result.subject;
+        document.getElementById('resultMarks').value = result.marks;
+        document.getElementById('resultModalTitle').textContent = 'Edit Result';
+        document.getElementById('resultSave').textContent = 'Update';
+        showModal();
+      }
+    }
+
+    // Update result
+    function updateResult(id, studentId, section, subject, marks) {
+      let index = results.findIndex(r => r.id === id);
+      if (index !== -1) {
+        results[index].studentId = studentId;
+        results[index].section = section;
+        results[index].subject = subject;
+        results[index].marks = marks;
+        saveData();
+        showResults();
+      }
+    }
+
+    // Delete result
+    function deleteResult(id) {
+      if (confirm('Delete this result?')) {
+        results = results.filter(r => r.id !== id);
+        saveData();
+        showResults();
+      }
+    }
+
+    // Open add
+    document.getElementById('openAddResult').onclick = function() {
+      document.getElementById('resultSubject').value = '';
+      document.getElementById('resultMarks').value = '';
+      editId = null;
+      document.getElementById('resultModalTitle').textContent = 'Add New Result';
+      document.getElementById('resultSave').textContent = 'Save';
+      fillDropdowns();
+      showModal();
+    };
+
+    // Cancel button
+    document.getElementById('resultCancel').onclick = function() {
+      hideModal();
+    };
+
+    // Save button
+    document.getElementById('resultSave').onclick = function() {
+      let studentId = document.getElementById('resultStudent').value;
+      let section = document.getElementById('resultSection').value;
+      let subject = document.getElementById('resultSubject').value.trim();
+      let marks = document.getElementById('resultMarks').value.trim();
+
+      if (!studentId || !section || !subject || !marks) return;
+
+      if (editId) {
+        updateResult(editId, studentId, section, subject, marks); // Update existing
+      } else {
+        addResult(studentId, section, subject, marks); // Add new
+      }
+
+      hideModal();
+    };
+
+    // Start app
+    loadData();
+    fillDropdowns();
+    showResults();
+  </script>
+
+</body>
+</html>
